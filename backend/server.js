@@ -12,6 +12,7 @@ app.use(express.json());
 
 connectDB();
 
+// Create a new todo
 app.post("/todos", async (req, res) => {
   try {
     const newTodo = new Todo({ title: req.body.title });
@@ -32,7 +33,7 @@ app.get("/todos", async (req, res) => {
   }
 });
 
-// update
+// update todo
 app.put("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -43,6 +44,17 @@ app.put("/todos/:id", async (req, res) => {
       { new: true }
     );
     res.json(updatedTodo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// delete todo
+app.delete("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTodo = await Todo.findByIdAndDelete(id);
+    res.json(deletedTodo);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
