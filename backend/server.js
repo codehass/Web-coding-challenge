@@ -12,9 +12,15 @@ app.use(express.json());
 
 connectDB();
 
-// app.get('/todos', (req, res) => {
-//   res.send('Backend is running...');
-// });
+app.post("/", async (req, res) => {
+  try {
+    const newTodo = new Todo({ title: req.body.title });
+    await newTodo.save();
+    res.json(newTodo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Get all todos
 app.get("/", async (req, res) => {
