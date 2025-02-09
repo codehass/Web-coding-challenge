@@ -12,7 +12,7 @@ app.use(express.json());
 
 connectDB();
 
-app.post("/", async (req, res) => {
+app.post("/todos", async (req, res) => {
   try {
     const newTodo = new Todo({ title: req.body.title });
     await newTodo.save();
@@ -23,10 +23,26 @@ app.post("/", async (req, res) => {
 });
 
 // Get all todos
-app.get("/", async (req, res) => {
+app.get("/todos", async (req, res) => {
   try {
     const todos = await Todo.find();
     res.json(todos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// update
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, status } = req.body;
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      { title, status },
+      { new: true }
+    );
+    res.json(updatedTodo);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
